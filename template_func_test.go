@@ -75,3 +75,30 @@ func TestTemplateFunctionMap(t *testing.T) {
 	body, _ := io.ReadAll(recorder.Result().Body)
 	fmt.Println(string(body))
 }
+
+func TemplateFunctionPipelines(w http.ResponseWriter, r *http.Request) {
+	t := template.New("FUNCTION")
+	t = t.Funcs(map[string]any{
+		"sayHello": func(name string) string {
+			return "Hello " + name
+		},
+		"upper": func(value string) string {
+			return strings.ToUpper(value)
+		},
+	})
+	t = template.Must(t.Parse(`{{ sayHello .Name | upper}}`))
+
+	t.ExecuteTemplate(w, "FUNCTION", MyPage{
+		Name: "vito jihad",
+	})
+}
+
+func TestTemplateFunctionPipelines(t *testing.T) {
+	requst := httptest.NewRequest(http.MethodGet, "http://localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateFunctionPipelines(recorder, requst)
+
+	body, _ := io.ReadAll(recorder.Result().Body)
+	fmt.Println(string(body))
+}

@@ -44,3 +44,23 @@ func TestTemplateActionOperator(t *testing.T) {
 	body, _ := io.ReadAll(recorder.Result().Body)
 	fmt.Println(string(body))
 }
+
+func TemplateActionRange(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.ParseFiles("./templates/range.gohtml"))
+	t.ExecuteTemplate(w, "range.gohtml", map[string]interface{}{
+		"Title": "Template Data Range",
+		"Hobbies": []string{
+			"Hiking", "Gaming", "Code",
+		},
+	})
+}
+
+func TestTemplateActionRange(t *testing.T) {
+	requst := httptest.NewRequest(http.MethodGet, "http://localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateActionRange(recorder, requst)
+
+	body, _ := io.ReadAll(recorder.Result().Body)
+	fmt.Println(string(body))
+}

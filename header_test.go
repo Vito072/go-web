@@ -25,3 +25,22 @@ func TestRequestHeader(t *testing.T) {
 
 	fmt.Println(string(body))
 }
+
+func ResponseHeader(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("X-Powered-By", "Vito Jihad A")
+	fmt.Fprint(w, "Ok")
+}
+
+func TestResponseHeader(t *testing.T) {
+	request := httptest.NewRequest("GET", "http:localhost:8080/", nil)
+	request.Header.Add("content-type", "application/json")
+	recorder := httptest.NewRecorder()
+
+	ResponseHeader(recorder, request)
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(body))
+	fmt.Println(response.Header.Get("X-Powered-By"))
+}

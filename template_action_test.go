@@ -64,3 +64,25 @@ func TestTemplateActionRange(t *testing.T) {
 	body, _ := io.ReadAll(recorder.Result().Body)
 	fmt.Println(string(body))
 }
+
+func TemplateActionWith(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.ParseFiles("./templates/address.gohtml"))
+	t.ExecuteTemplate(w, "address.gohtml", map[string]interface{}{
+		"Title": "Template Data With",
+		"Name":  "Vito",
+		"Address": map[string]any{
+			"Street": "Jl Pasopati",
+			"City":   "Bandung",
+		},
+	})
+}
+
+func TestTemplateActionWith(t *testing.T) {
+	requst := httptest.NewRequest(http.MethodGet, "http://localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateActionWith(recorder, requst)
+
+	body, _ := io.ReadAll(recorder.Result().Body)
+	fmt.Println(string(body))
+}
